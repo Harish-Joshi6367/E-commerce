@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="header"><div class="brand">Checkout</div><div class="nav"><a href="index.html">Home</a></div></div>
+  <div class="container" id="checkout-area">
+    <h2>Place Order</h2>
+    <label>Name</label>
+    <input id="ship-name" class="form-control">
+    <label>Address</label>
+    <input id="ship-addr" class="form-control">
+    <button id="place-order" class="btn">Place Order</button>
+  </div>
+  <script type="module">
+    import { loadCheckoutPage } from './js/pages.js';
+    loadCheckoutPage();
+  </script>
+</body>
+</html>

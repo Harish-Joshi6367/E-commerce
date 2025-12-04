@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="header">
+    <div class="brand">Product Details</div>
+    <div class="nav"><a href="index.html">Home</a><a href="cart.html">Cart</a></div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <img id="pd-img" src="" alt="">
+      <h3 id="pd-name"></h3>
+      <p id="pd-desc"></p>
+      <div id="pd-price"></div>
+      <div>
+        <input id="qty" class="form-control" type="number" min="1" value="1">
+        <button id="add-to-cart" class="btn">Add to cart</button>
+      </div>
+    </div>
+  </div>
+  <script type="module">
+    import { loadProductDetails } from './js/pages.js';
+    loadProductDetails();
+  </script>
+</body>
+</html>

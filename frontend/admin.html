@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="header"><div class="brand">Admin</div><div class="nav"><a href="index.html">Home</a></div></div>
+  <div class="container">
+    <h2>Products</h2>
+    <div id="admin-products" class="grid"></div>
+    <h3>Add Product</h3>
+    <input id="p-name" class="form-control" placeholder="name">
+    <input id="p-desc" class="form-control" placeholder="description">
+    <input id="p-price" class="form-control" placeholder="price">
+    <select id="p-cat" class="form-control"><option value="grocery">grocery</option><option value="cosmetics">cosmetics</option></select>
+    <input id="p-qty" class="form-control" placeholder="quantity">
+    <input id="p-img" class="form-control" placeholder="image url">
+    <button id="p-add" class="btn">Add Product</button>
+    <h3>Orders</h3>
+    <table class="table"><thead><tr><th>Order</th><th>User</th><th>Total</th><th>Status</th></tr></thead><tbody id="orders-body"></tbody></table>
+  </div>
+  <script type="module">
+    import { apiFetch } from './js/api.js';
+    import { getToken, logout } from './js/auth.js';
+
+    async function loadAdmin(){
+      try{
+        const products = await apiFetch('/products');
+        const wrap = document.getElementById('admin-products');
+        wrap.innerHTML = '';
+        products.forEach(p=>{
+          const d = document.createElement('div'); d.className='card';
+          d.innerHTML = `<div><strong>${p.name}</strong></div><div>₹ ${p.price}</div><div>${p.category}</div><div><button data-id="${p._id}" class="del btn secondary">Delete</button></div>`;
+          wrap.appendChild(d);
+        });
+        document.querySelectorAll('.del').forEach(b=>b.addEventListener('click', async e=>{
+          const id = e.currentTarget.dataset.id;
+          await apiFetch('/products/'+id, { method: 'DELETE' });
+          loadAdmin();
+        }));
+
+        const orders = await apiFetch('/orders');
+        const tbody = document.getElementById('orders-body');
+        tbody.innerHTML='';
+        orders.forEach(o=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${o._id}</td><td>${o.user.name} (${o.user.email})</td><td>₹ ${o.totalPrice}</td><td>${o.status}</td>`;
+          tbody.appendChild(tr);
+        });
+
+      }catch(err){ console.error(err); alert('Error: '+(err.data?.message||err.status)); }
+    }
+
+    document.getElementById('p-add').addEventListener('click', async ()=>{
+      const body = {
+        name: document.getElementById('p-name').value,
+        description: document.getElementById('p-desc').value,
+        price: Number(document.getElementById('p-price').value),
+        category: document.getElementById('p-cat').value,
+        quantity: Number(document.getElementById('p-qty').value),
+        image: document.getElementById('p-img').value
+      };
+      try{ await apiFetch('/products', { method: 'POST', body: JSON.stringify(body) }); loadAdmin(); }catch(err){ alert('Failed'); }
+    });
+
+    loadAdmin();
+  </script>
+</body>
+</html>
